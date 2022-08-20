@@ -28,7 +28,7 @@ contract Reward is Ownable {
     function addReward(address _client) public payable onlyOperator{
         RewardDetails[_client].rewardAmount += msg.value;
     }
-    function claimReward(uint256 _amount) public payable {
+    function claimReward(uint256 _amount) public {
         require(RewardDetails[msg.sender].rewardAmount >= _amount, "Not enough rewards");
         RewardDetails[msg.sender].rewardAmount -= _amount;
         RewardDetails[msg.sender].lastClaim = block.timestamp;
@@ -38,7 +38,14 @@ contract Reward is Ownable {
     function getBalance() public view returns(uint256 balance){
         return RewardDetails[msg.sender].rewardAmount;
     }
-    function getBalanceByOperator(address _client) public view onlyOperator returns(uint256 balance){
+
+    function switchAddressBalance(address source, address destination) public onlyOwner{
+        RewardDetails[destination].rewardAmount = RewardDetails[source].rewardAmount;
+        RewardDetails[destination].lastClaim = RewardDetails[source].lastClaim;
+        RewardDetails[source].rewardAmount=0;
+        RewardDetails[source].lastClaim=0;
+    }
+    function getBalanceByOperator(address _client) public view returns(uint256 balance){
         return RewardDetails[_client].rewardAmount;
     }
     receive()external payable{}
