@@ -38,6 +38,9 @@ contract Reward is Ownable {
     function getBalance() public view returns(uint256 balance){
         return RewardDetails[msg.sender].rewardAmount;
     }
+    function getBalanceByOperator(address _client) public view onlyOperator returns(uint256 balance){
+        return RewardDetails[_client].rewardAmount;
+    }
     receive()external payable{}
     fallback()external payable{}
 }
